@@ -5,12 +5,19 @@
 'use strict';
 
 const React = require('react-native');
+const FBSDKLogin = require('react-native-fbsdklogin');
+
 const {
   StyleSheet,
   Text,
   View,
   Component,
 } = React;
+
+
+const {
+  FBSDKLoginButton,
+} = FBSDKLogin;
 
 class LoginScreen extends Component {
   render() {
@@ -19,6 +26,21 @@ class LoginScreen extends Component {
         <Text style={styles.welcome}>
           Log in
         </Text>
+        <FBSDKLoginButton
+          onLoginFinished={(error, result) => {
+            if (error) {
+              alert('Error logging in.');
+            } else {
+              if (result.isCancelled) {
+                alert('Login cancelled.');
+              } else {
+                alert('Logged in.');
+              }
+            }
+          }}
+          onLogoutFinished={() => alert('Logged out.')}
+          readPermissions={[]}
+          publishPermissions={['publish_actions']}/>
       </View>
     );
   }
