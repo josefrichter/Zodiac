@@ -5,7 +5,16 @@
 'use strict';
 
 const React = require('react-native');
+const FBSDKCore = require('react-native-fbsdkcore');
 const FBSDKLogin = require('react-native-fbsdklogin');
+
+var Parse = require('parse').Parse;
+var ParseReact = require('parse-react');
+
+Parse.initialize(
+  'fqJrhjgv5uwpRrZgpHzW3l5U9GqelidCgNActEBw',
+  'V5Q3KmrAWPUtLUdVeGlY3RFRsFhUngn2Sq5jtlPG'
+);
 
 const {
   StyleSheet,
@@ -14,6 +23,10 @@ const {
   Component,
 } = React;
 
+
+const {
+  FBSDKGraphRequest,
+} = FBSDKCore;
 
 const {
   FBSDKLoginButton,
@@ -34,12 +47,25 @@ class LoginScreen extends Component {
               if (result.isCancelled) {
                 alert('Login cancelled.');
               } else {
+                console.log(result);
                 alert('Logged in.');
+
+                var fetchMeRequest = new FBSDKGraphRequest((error, result) => {
+                  if (error) {
+                    alert('Error making request.');
+                  } else {
+                    // Data from request is in result
+                    console.log(result);
+                    // TODO save to Parse
+                  }
+                }, '/me?fields=id,first_name,name,birthday,gender,email');
+                // Start the graph request.
+                fetchMeRequest.start();
               }
             }
           }}
           onLogoutFinished={() => alert('Logged out.')}
-          readPermissions={[]}
+          readPermissions={['public_profile', 'user_birthday', 'email']}
           publishPermissions={['publish_actions']}/>
       </View>
     );
