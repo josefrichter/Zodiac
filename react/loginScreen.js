@@ -36,6 +36,33 @@ const {
 
 class LoginScreen extends Component {
 
+  _onPressFBLoginButton(credentials) {
+
+    var expdate = new Date(credentials._expirationDate);
+    expdate = expdate.toISOString();
+
+    let authData = {
+      id: credentials.userID,
+      access_token: credentials.tokenString,
+      expiration_date: expdate
+    };
+    // console.log(authData);
+
+    Parse.FacebookUtils.logIn(authData, {
+      success: function(user) {
+        if (!user.existed()) {
+          alert("User signed up and logged in through Facebook!");
+        } else {
+          alert("User logged in through Facebook!");
+        }
+      },
+      error: function(user, error) {
+        console.log(user,error);
+        alert("User cancelled the Facebook login or did not fully authorize.");
+      }
+    });
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -51,34 +78,20 @@ class LoginScreen extends Component {
                 alert('Login cancelled.');
               } else {
                 console.log(result);
-                alert('Logged in.');
+                // alert('Logged in.');
 
                 var fetchMeRequest = new FBSDKGraphRequest((error, result) => {
                   if (error) {
                     alert('Error making request.');
                   } else {
                     // Data from request is in result
-                    console.log(result);
+                    // console.log(result);
 
                     var myToken;
 
                     FBSDKAccessToken.getCurrentAccessToken((token) => {
                       console.log(token);
-                      var user = new Parse.User({
-                        username: token.userID,
-                        password: token.userID
-                      });
-
-                      user.signUp(null, {
-                        success: function(user) {
-                          // Hooray! Let them use the app now.
-                          console.log(user);
-                        },
-                        error: function(user, error) {
-                          // Show the error message somewhere and let the user try again.
-                          alert("Error: " + error.code + " " + error.message);
-                        }
-                      });
+                      this._onPressFBLoginButton(token);
 
                     });
 
@@ -90,8 +103,8 @@ class LoginScreen extends Component {
             }
           }}
           onLogoutFinished={() => alert('Logged out.')}
-          readPermissions={['public_profile', 'user_birthday', 'email']}
-          publishPermissions={['publish_actions']}/>
+          readPermissions={['public_profile', 'email']}
+          publishPermissions={[]}/>
       </View>
     );
   }
