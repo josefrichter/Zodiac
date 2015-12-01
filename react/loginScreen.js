@@ -36,17 +36,38 @@ const {
 
 class LoginScreen extends Component {
 
-  _onPressFBLoginButton(credentials) {
+  _onPressFBLoginButton() {
+      // we need to make one more request to get the token becase the token is not sent back in the login
+      var fetchMeRequest = new FBSDKGraphRequest((error, result) => {
+        if (error) {
+          alert('Error making request.');
+        } else {
+          // Data from request is in result
+          console.log(result);
+          FBSDKAccessToken.getCurrentAccessToken((token) => {
+            console.log(token);
+            this._afterFBLoginButton(token);
 
+          });
+
+        }
+      }, '/me?fields=id,first_name,name,birthday,gender,email');
+      // Start the graph request.
+      fetchMeRequest.start();
+  }
+
+  _afterFBLoginButton(credentials) {
+
+    // the timestamp needs to be reformatted for Parse http://stackoverflow.com/questions/12945003/format-date-as-yyyy-mm-ddthhmmss-sssz
     var expdate = new Date(credentials._expirationDate);
     expdate = expdate.toISOString();
 
+    // these are the data from the successful FB login we will pass to Parse.FacebookUtils.logIn instead of null
     let authData = {
       id: credentials.userID,
       access_token: credentials.tokenString,
       expiration_date: expdate
     };
-    // console.log(authData);
 
     Parse.FacebookUtils.logIn(authData, {
       success: function(user) {
@@ -79,26 +100,7 @@ class LoginScreen extends Component {
               } else {
                 console.log(result);
                 // alert('Logged in.');
-
-                var fetchMeRequest = new FBSDKGraphRequest((error, result) => {
-                  if (error) {
-                    alert('Error making request.');
-                  } else {
-                    // Data from request is in result
-                    // console.log(result);
-
-                    var myToken;
-
-                    FBSDKAccessToken.getCurrentAccessToken((token) => {
-                      console.log(token);
-                      this._onPressFBLoginButton(token);
-
-                    });
-
-                  }
-                }, '/me?fields=id,first_name,name,birthday,gender,email');
-                // Start the graph request.
-                fetchMeRequest.start();
+                this._onPressFBLoginButton();
               }
             }
           }}
