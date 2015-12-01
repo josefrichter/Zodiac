@@ -11,24 +11,37 @@ const {
   Text,
   View,
   Component,
-  NavigatorIOS,
+  Navigator,
 } = React;
 
 var LoginScreen = require('./react/loginScreen.js');
 
 class Zodiac extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  // docs for Navigator: http://stackoverflow.com/questions/29335523/react-native-custom-navigation-with-navigator-component
   render() {
     return (
-      <NavigatorIOS ref="nav"
+      <Navigator
         itemWrapperStyle={styles.navWrap}
         style={styles.nav}
-        initialRoute={{
-          title: "Login",
-          component: LoginScreen,
-          passProps: {
-            toggleNavBar: this.toggleNavBar,
-          }
-        }} />
+        initialRoute={{name: 'Login', component: LoginScreen}}
+        configureScene={() => {
+            return Navigator.SceneConfigs.FloatFromRight;
+        }}
+        renderScene={(route, navigator) => {
+            // count the number of func calls
+            console.log(route, navigator);
+
+            if (route.component) {
+                return React.createElement(route.component, { navigator });
+            }
+        }}
+     />
     );
   }
 }

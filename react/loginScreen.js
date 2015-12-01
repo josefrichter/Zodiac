@@ -22,6 +22,7 @@ const {
   Text,
   View,
   Component,
+  TouchableWithoutFeedback,
 } = React;
 
 
@@ -34,7 +35,23 @@ const {
   FBSDKLoginButton,
 } = FBSDKLogin;
 
+var ProfileScreen = require('./profileScreen.js');
+
 class LoginScreen extends Component {
+
+  constructor(props) {
+    super(props);
+    this._goToProfile = this._goToProfile.bind(this);
+    this.state = {};
+  }
+
+  _goToProfile() {
+    this.props.navigator.push({
+      title: "Profile",
+      component: ProfileScreen,
+      passProps: {}
+    });
+  }
 
   _onPressFBLoginButton() {
       // we need to make one more request to get the token becase the token is not sent back in the login
@@ -75,6 +92,7 @@ class LoginScreen extends Component {
           alert("User signed up and logged in through Facebook!");
         } else {
           alert("User logged in through Facebook!");
+          this._goToProfile;
         }
       },
       error: function(user, error) {
@@ -106,9 +124,17 @@ class LoginScreen extends Component {
           onLogoutFinished={() => alert('Logged out.')}
           readPermissions={['public_profile', 'email']}
           publishPermissions={[]}/>
+
+          <TouchableWithoutFeedback
+            onPress={this._goToProfile.bind(this)}>
+            <View style={styles.button}>
+              <Text style={styles.buttonText}>Testing - Go to ProfileScreen</Text>
+            </View>
+          </TouchableWithoutFeedback>
       </View>
     );
   }
+
 }
 
 const styles = StyleSheet.create({
@@ -122,6 +148,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     margin: 10,
+  },
+  button: {
+    backgroundColor: "#009DDD",
+    padding: 10,
+    margin: 10,
+  },
+  buttonText: {
+    color: "#fff"
   },
 });
 
