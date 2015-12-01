@@ -88,7 +88,6 @@ class LoginScreen extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
-          Log in
         </Text>
         <FBSDKLoginButton
           onLoginFinished={(error, result) => {

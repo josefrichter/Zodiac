@@ -11,16 +11,45 @@ const {
   Text,
   View,
   Component,
+  NavigatorIOS,
 } = React;
 
-const LoginScreen = require('./react/loginScreen.js');
+var LoginScreen = require('./react/loginScreen.js');
 
 class Zodiac extends Component {
   render() {
     return (
-        <LoginScreen/>
+      <NavigatorIOS ref="nav"
+        itemWrapperStyle={styles.navWrap}
+        style={styles.nav}
+        initialRoute={{
+          title: "Login",
+          component: LoginScreen,
+          passProps: {
+            toggleNavBar: this.toggleNavBar,
+          }
+        }} />
     );
   }
 }
+
+var styles = StyleSheet.create({
+  navWrap: {
+    flex: 1,
+    marginTop: 64
+  },
+  nav: {
+    flex: 1,
+  },
+  button: {
+    backgroundColor: "#009DDD",
+    padding: 10,
+    margin: 10,
+  },
+  buttonText: {
+    color: "#fff"
+  }
+});
+
 
 AppRegistry.registerComponent('Zodiac', () => Zodiac);
