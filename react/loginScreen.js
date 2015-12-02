@@ -23,6 +23,7 @@ const {
   View,
   Component,
   TouchableWithoutFeedback,
+  Image,
 } = React;
 
 
@@ -37,6 +38,8 @@ const {
 
 var ProfileScreen = require('./profileScreen.js');
 
+var currentuser;
+
 class LoginScreen extends Component {
 
   constructor(props) {
@@ -46,11 +49,46 @@ class LoginScreen extends Component {
   }
 
   _goToProfile() {
+    this._getProfilePic;
     this.props.navigator.push({
       title: "Profile",
       component: ProfileScreen,
-      passProps: {}
+      passProps: {} // TODO https://github.com/facebook/react-native/issues/1103
     });
+  }
+
+  _getProfilePic() {
+      // we need to make one more request to get the token becase the token is not sent back in the login
+      var fetchPorfilePicRequest = new FBSDKGraphRequest((error, result) => {
+        if (error) {
+          console.log(error);
+          alert('Error making request.');
+        } else {
+          // Data from request is in result
+          console.log(result);
+          // this.setState({profile_pic_url: result.data.url});
+          // console.log(this.state);
+
+          var currentUser = Parse.User.currentAsync().then(
+              (currentuser) =>  {
+                  if (currentUser) {
+                      // do stuff with the user
+                      currentuser.set("profilepic", result.data.url);
+                      currentuser.save();
+                      console.log(currentuser);
+                  } else {
+                      // show the signup or login page
+                      alert("cannot get currentuser");
+                  }
+              }
+
+          );
+
+
+        }
+      }, '/me/picture?type=large&redirect=false');
+      // Start the graph request.
+      fetchPorfilePicRequest.start();
   }
 
   _onPressFBLoginButton() {
@@ -63,6 +101,7 @@ class LoginScreen extends Component {
           console.log(result);
           FBSDKAccessToken.getCurrentAccessToken((token) => {
             console.log(token);
+            // this.setState({access_token: token.tokenString});
             this._afterFBLoginButton(token);
 
           });
@@ -92,8 +131,9 @@ class LoginScreen extends Component {
           alert("User signed up and logged in through Facebook!");
         } else {
           alert("User logged in through Facebook!");
-          this._goToProfile;
         }
+        currentuser = user;
+        this._goToProfile;
       },
       error: function(user, error) {
         console.log(user,error);
@@ -131,6 +171,19 @@ class LoginScreen extends Component {
               <Text style={styles.buttonText}>Testing - Go to ProfileScreen</Text>
             </View>
           </TouchableWithoutFeedback>
+
+          <TouchableWithoutFeedback
+            onPress={this._getProfilePic.bind(this)}>
+            <View style={styles.button}>
+              <Text style={styles.buttonText}>Testing - Get profile pic</Text>
+            </View>
+          </TouchableWithoutFeedback>
+
+          <Image
+            style={styles.profilepic}
+            source={{uri: this.state.profile_pic_url}}
+          />
+
       </View>
     );
   }
