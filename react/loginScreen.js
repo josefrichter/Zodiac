@@ -73,7 +73,7 @@ class LoginScreen extends Component {
               (currentuser) =>  {
                   if (currentUser) {
                       // do stuff with the user
-                      currentuser.set("profilepic", result.data.url);
+                      currentuser.set("profilePictureUrl", result.data.url);
                       currentuser.save();
                       console.log(currentuser);
                   } else {
