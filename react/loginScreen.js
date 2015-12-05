@@ -11,11 +11,12 @@ const FBSDKLogin = require('react-native-fbsdklogin');
 // var Parse = require('parse').Parse;
 var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
+var ParseComponent = ParseReact.Component(React);
 
-Parse.initialize(
-  'fqJrhjgv5uwpRrZgpHzW3l5U9GqelidCgNActEBw',
-  'V5Q3KmrAWPUtLUdVeGlY3RFRsFhUngn2Sq5jtlPG'
-);
+// Parse.initialize(
+//   'fqJrhjgv5uwpRrZgpHzW3l5U9GqelidCgNActEBw',
+//   'V5Q3KmrAWPUtLUdVeGlY3RFRsFhUngn2Sq5jtlPG'
+// );
 
 const {
   StyleSheet,
@@ -40,12 +41,19 @@ const {
 
 var currentuser;
 
-class LoginScreen extends Component {
+class LoginScreen extends ParseComponent {
 
   constructor(props) {
     super(props);
     this._goToProfile = this._goToProfile.bind(this);
     this.state = {};
+  }
+
+  observe() {
+    console.log(ParseReact.currentUser)
+    return {
+      user: ParseReact.currentUser
+    };
   }
 
   _goToProfile() {
@@ -167,23 +175,18 @@ class LoginScreen extends Component {
           publishPermissions={[]}/>
 
           <TouchableWithoutFeedback
-            onPress={this._goToProfile.bind(this)}>
-            <View style={styles.button}>
-              <Text style={styles.buttonText}>Testing - Go to ProfileScreen</Text>
-            </View>
-          </TouchableWithoutFeedback>
-
-          <TouchableWithoutFeedback
             onPress={this._getProfilePic.bind(this)}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>Testing - Get profile pic</Text>
             </View>
           </TouchableWithoutFeedback>
 
-          <Image
-            style={styles.profilepic}
-            source={{uri: this.state.profile_pic_url}}
-          />
+          <TouchableWithoutFeedback
+            onPress={this._goToProfile.bind(this)}>
+            <View style={styles.button}>
+              <Text style={styles.buttonText}>Testing - Go to ProfileScreen</Text>
+            </View>
+          </TouchableWithoutFeedback>
 
       </View>
     );

@@ -14,6 +14,13 @@ const {
   Navigator,
 } = React;
 
+var Parse = require('parse/react-native');
+var ParseReact = require('parse-react/react-native');
+Parse.initialize(
+  'fqJrhjgv5uwpRrZgpHzW3l5U9GqelidCgNActEBw',
+  'V5Q3KmrAWPUtLUdVeGlY3RFRsFhUngn2Sq5jtlPG'
+);
+
 var LoginScreen = require('./react/loginScreen.js');
 var ProfileScreen = require('./react/profileScreen.js');
 var BrowsingScreen = require('./react/browsingScreen.js');

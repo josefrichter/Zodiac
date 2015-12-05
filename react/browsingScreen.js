@@ -1,9 +1,25 @@
 'use strict';
 
-import React, { AppRegistry, StyleSheet, Text, View, Animated, Component, PanResponder, } from 'react-native';
+import React, {
+  AppRegistry,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Animated,
+  Component,
+  PanResponder, } from 'react-native';
 import clamp from 'clamp';
+// import ReactMixin from 'react-mixin';
 
-const People = [
+// var ReactMixin = require('react-mixin');
+
+var Parse = require('parse/react-native');
+var ParseReact = require('parse-react/react-native');
+var ParseComponent = ParseReact.Component(React);
+
+
+var People = [
   'red',
   'green',
   'blue',
@@ -11,17 +27,42 @@ const People = [
   'orange',
 ]
 
+// var query = new Parse.Query(Parse.User);
+// query.equalTo("gender", "female");  // find all the women
+// query.find({
+//   success: function(women) {
+//     // Do stuff
+//     console.log(women);
+//   }
+// });
+
 var SWIPE_THRESHOLD = 120;
 
-class BrowsingScreen extends Component {
-  constructor(props) {
-    super(props);
+// taken from https://github.com/brentvatne/react-native-animated-demo-tinder
+class BrowsingScreen extends ParseComponent {
+
+  constructor() {
+    super();
 
     this.state = {
       pan: new Animated.ValueXY(),
       enter: new Animated.Value(0.5),
-      person: People[0],
+      person: {attributes: {firstName: 'empty'}},
     }
+
+    this.componentWillMount = this.componentWillMount.bind(this)
+  }
+
+  // By extending ParseComponent, it is possible to observe queries
+  observe(props, state) {
+    // var query = new Parse.Query('User');
+    // query.equalTo("gender", "female").limit(5);  // find all the women
+    // console.log(query);
+    console.log('props', props);
+    return {
+      users: new Parse.Query('User')
+    }
+    console.log('props', props);
   }
 
   _goToNextPerson() {
@@ -45,6 +86,28 @@ class BrowsingScreen extends Component {
   }
 
   componentWillMount() {
+
+    var query = new Parse.Query('User');
+    query.equalTo("gender", "Female").limit(15);  // find all the women
+    console.log(query);
+    // return {
+    //   users: query
+    // }
+    console.log('this', this);
+    var _this = this;
+    query.find({
+      success: (object) => {
+        // Successfully retrieved the object.
+        console.log('query response:', object);
+        People = object
+        // person: People[0],
+        this.setState({person: People[0]});
+      },
+      error: function(error) {
+        alert("Error: " + error.code + " " + error.message);
+      }
+    });
+
     this._panResponder = PanResponder.create({
       onMoveShouldSetResponderCapture: () => true,
       onMoveShouldSetPanResponderCapture: () => true,
@@ -72,7 +135,7 @@ class BrowsingScreen extends Component {
           Animated.decay(this.state.pan, {
             velocity: {x: velocity, y: vy},
             deceleration: 0.98
-          }).start(this._resetState)
+          }).start(this._resetState.bind(this))
         } else {
           Animated.spring(this.state.pan, {
             toValue: {x: 0, y: 0},
@@ -90,7 +153,28 @@ class BrowsingScreen extends Component {
     this._animateEntrance();
   }
 
+  render7() {
+    console.log(this.data);
+    return (
+        <View style={styles.container}>
+            <Text style={styles.yupText}>nothing!</Text>
+        </View>
+    );
+  }
+
+  render6() {
+    // Render the text of each comment as a list item
+    return (
+      <ul>
+        {this.data.users.map(function(user) {
+          return <li>{user.attributes.firstName}</li>;
+        })}
+      </ul>
+    );
+  }
+
   render() {
+    console.log(this.state.person);
     let { pan, enter, } = this.state;
 
     let [translateX, translateY] = [pan.x, pan.y];
@@ -111,7 +195,13 @@ class BrowsingScreen extends Component {
 
     return (
       <View style={styles.container}>
-        <Animated.View style={[styles.card, animatedCardStyles, {backgroundColor: this.state.person}]} {...this._panResponder.panHandlers}>
+
+        <Animated.View style={[styles.card, animatedCardStyles, {backgroundColor: 'red'}]} {...this._panResponder.panHandlers}>
+          <Text style={styles.yupText}>{this.state.person.attributes.firstName}</Text>
+          <Image
+            source={{uri: this.state.person.attributes.profilePictureUrl}}
+            style={styles.profilepic}
+          />
         </Animated.View>
 
         <Animated.View style={[styles.nope, animatedNopeStyles]}>
@@ -163,8 +253,14 @@ var styles = StyleSheet.create({
   nopeText: {
     fontSize: 16,
     color: 'red',
-  }
+  },
+  profilepic: {
+      margin: 10,
+      width: 200,
+      height: 200,
+  },
 });
 
-// AppRegistry.registerComponent('BrowsingScreen', () => BrowsingScreen);
 module.exports = BrowsingScreen;
+
+// ReactMixin.onClass(BrowsingScreen, ParseReact.Mixin);

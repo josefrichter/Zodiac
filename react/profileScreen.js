@@ -31,9 +31,9 @@ class ProfileScreen extends Component {
   componentWillMount() {
     var currentUser = Parse.User.currentAsync().then(
       (currentuser) => {
-          this.setState({profile_pic_url: currentuser.attributes.profilepic});
-          console.log(currentuser.attributes.profilepic);
-          console.log(this.state.profile_pic_url);
+          this.setState({profile_pic_url: currentuser.attributes.profilePictureUrl});
+          // console.log(currentuser.attributes.profilepic);
+          // console.log(this.state.profile_pic_url);
       }
     )
   }
