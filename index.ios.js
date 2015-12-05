@@ -15,6 +15,8 @@ const {
 } = React;
 
 var LoginScreen = require('./react/loginScreen.js');
+var ProfileScreen = require('./react/profileScreen.js');
+var BrowsingScreen = require('./react/browsingScreen.js');
 
 class Zodiac extends Component {
 
@@ -23,24 +25,38 @@ class Zodiac extends Component {
     this.state = {};
   }
 
+  // https://github.com/facebook/react-native/blob/master/Examples/UIExplorer/Navigator/NavigatorExample.js
+  _renderScene(route, nav) {
+    console.log(nav);
+    var FallbackComponent = LoginScreen;
+    var Component = FallbackComponent;
+    switch (route.id) {
+      case 'login':
+        return <LoginScreen navigator={nav} />;
+      case 'profile':
+        return <ProfileScreen navigator={nav} />;
+      case 'browsing':
+        return <BrowsingScreen navigator={nav} />;
+    }
+    return <Component navigator={nav} />;
+  }
+
   // docs for Navigator: http://stackoverflow.com/questions/29335523/react-native-custom-navigation-with-navigator-component
+  // v2 https://github.com/facebook/react-native/issues/3076
   render() {
     return (
       <Navigator
         itemWrapperStyle={styles.navWrap}
         style={styles.nav}
-        initialRoute={{name: 'Login', component: LoginScreen}}
+        initialRoute={{
+          name: 'Login',
+          id: 'login',
+          // component: LoginScreen
+        }}
         configureScene={() => {
             return Navigator.SceneConfigs.FloatFromRight;
         }}
-        renderScene={(route, navigator) => {
-            // count the number of func calls
-            console.log(route, navigator);
-
-            if (route.component) {
-                return React.createElement(route.component, { navigator });
-            }
-        }}
+        renderScene={this._renderScene}
      />
     );
   }

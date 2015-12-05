@@ -36,7 +36,7 @@ const {
   FBSDKLoginButton,
 } = FBSDKLogin;
 
-var ProfileScreen = require('./profileScreen.js');
+// var ProfileScreen = require('./profileScreen.js');
 
 var currentuser;
 
@@ -52,7 +52,8 @@ class LoginScreen extends Component {
     this._getProfilePic;
     this.props.navigator.push({
       title: "Profile",
-      component: ProfileScreen,
+      id: "profile",
+      // component: ProfileS  creen,
       passProps: {} // TODO https://github.com/facebook/react-native/issues/1103
     });
   }

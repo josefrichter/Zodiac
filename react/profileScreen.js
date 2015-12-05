@@ -19,6 +19,8 @@ const {
   FBSDKGraphRequest,
 } = FBSDKCore;
 
+// var BrowsingScreen = require('./browsingScreen.js');
+
 class ProfileScreen extends Component {
 
   constructor(props) {
@@ -40,6 +42,16 @@ class ProfileScreen extends Component {
     this.props.navigator.pop();
   }
 
+  _goBrowsing() {
+    // var BrowsingScreen = require('./browsingScreen.js');
+    this.props.navigator.push({
+      title: "Browse",
+      id: "browsing",
+      // component: BrowsingScreen,
+      passProps: {} // TODO https://github.com/facebook/react-native/issues/1103
+    });
+  }
+
   render () {
     return (
       <View style={styles.container}>
@@ -57,6 +69,13 @@ class ProfileScreen extends Component {
           onPress={this._goBack.bind(this)}>
           <View style={styles.button}>
             <Text style={styles.buttonText}>Testing - Go back</Text>
+          </View>
+        </TouchableWithoutFeedback>
+
+        <TouchableWithoutFeedback
+          onPress={this._goBrowsing.bind(this)}>
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>Profile ready - let's go!</Text>
           </View>
         </TouchableWithoutFeedback>
 
@@ -81,7 +100,15 @@ const styles = StyleSheet.create({
       margin: 10,
       width: 200,
       height: 200,
-  }
+  },
+  button: {
+    backgroundColor: "#009DDD",
+    padding: 10,
+    margin: 10,
+  },
+  buttonText: {
+    color: "#fff"
+  },
 });
 
 module.exports = ProfileScreen;
