@@ -15,6 +15,8 @@ var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
 var ParseComponent = ParseReact.Component(React);
 
+var Id = require('parse-react/lib/react-native/Id');
+
 
 var People = [
   'red',
@@ -39,6 +41,7 @@ class BrowsingScreen extends ParseComponent {
     }
 
     this.componentWillMount = this.componentWillMount.bind(this)
+    this._handleYes = this._handleYes.bind(this)
   }
 
   // By extending ParseComponent, it is possible to observe queries
@@ -46,11 +49,11 @@ class BrowsingScreen extends ParseComponent {
     // var query = new Parse.Query('User');
     // query.equalTo("gender", "female").limit(5);  // find all the women
     // console.log(query);
-    console.log('props', props);
+    // console.log('props', props);
     return {
       users: new Parse.Query('User')
     }
-    console.log('props', props);
+    // console.log('props', props);
   }
 
   _goToNextPerson() {
@@ -77,9 +80,9 @@ class BrowsingScreen extends ParseComponent {
 
     var query = new Parse.Query('User');
     query.equalTo("gender", "Female").limit(15);  // find all the women
-    console.log(query);
-    console.log('this', this);
-    var _this = this;
+    // console.log(query);
+    // console.log('this', this);
+    // var _this = this;
     query.find({
       success: (object) => {
         // Successfully retrieved the object.
@@ -120,6 +123,13 @@ class BrowsingScreen extends ParseComponent {
             velocity: {x: velocity, y: vy},
             deceleration: 0.98
           }).start(this._resetState.bind(this))
+          if (this.state.pan.x._value > 0) {
+              console.log('yes');
+              this._handleYes();
+          } else {
+            console.log('no');
+          }
+
         } else {
           Animated.spring(this.state.pan, {
             toValue: {x: 0, y: 0},
@@ -137,8 +147,27 @@ class BrowsingScreen extends ParseComponent {
     this._animateEntrance();
   }
 
+  _handleYes() {
+      // add shown person's ID to yeses
+      var me = new Id('_User', Parse.User.current().id);
+      // dunno why this was needed, taken from https://github.com/wdragon/Teamz/blob/dc5ea4f52423fcb572bc158f77c70f741f1f8930/js/GroupCreateModal.react.js
+      ParseReact.Mutation.AddUnique(me, 'yeses', this.state.person.id).dispatch();
+
+      // check match
+      // console.log(this.state.person);
+      // console.log(String(Parse.User.current().id));
+      // console.log('not undefined?', typeof(this.state.person.yeses) !== 'undefined')
+      if (typeof(this.state.person.attributes.yeses) !== 'undefined') {
+          // console.log(this.state.person.attributes.yeses);
+          if (this.state.person.attributes.yeses.includes(String(Parse.User.current().id))) {
+            console.log("it's a match!");
+          }
+      }
+
+  }
+
   render() {
-    console.log(this.state.person);
+    // console.log(this.state.person);
     let { pan, enter, } = this.state;
 
     let [translateX, translateY] = [pan.x, pan.y];
@@ -161,11 +190,11 @@ class BrowsingScreen extends ParseComponent {
       <View style={styles.container}>
 
         <Animated.View style={[styles.card, animatedCardStyles, {backgroundColor: 'red'}]} {...this._panResponder.panHandlers}>
-          <Text style={styles.yupText}>{this.state.person.attributes.firstName}</Text>
           <Image
             source={{uri: this.state.person.attributes.profilePictureUrl}}
             style={styles.profilepic}
           />
+          <Text style={styles.yupText}>{this.state.person.attributes.firstName}</Text>
         </Animated.View>
 
         <Animated.View style={[styles.nope, animatedNopeStyles]}>
