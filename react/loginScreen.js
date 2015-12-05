@@ -8,15 +8,9 @@ const React = require('react-native');
 const FBSDKCore = require('react-native-fbsdkcore');
 const FBSDKLogin = require('react-native-fbsdklogin');
 
-// var Parse = require('parse').Parse;
 var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
 var ParseComponent = ParseReact.Component(React);
-
-// Parse.initialize(
-//   'fqJrhjgv5uwpRrZgpHzW3l5U9GqelidCgNActEBw',
-//   'V5Q3KmrAWPUtLUdVeGlY3RFRsFhUngn2Sq5jtlPG'
-// );
 
 const {
   StyleSheet,
@@ -36,8 +30,6 @@ const {
 const {
   FBSDKLoginButton,
 } = FBSDKLogin;
-
-// var ProfileScreen = require('./profileScreen.js');
 
 var currentuser;
 
@@ -61,7 +53,6 @@ class LoginScreen extends ParseComponent {
     this.props.navigator.push({
       title: "Profile",
       id: "profile",
-      // component: ProfileS  creen,
       passProps: {} // TODO https://github.com/facebook/react-native/issues/1103
     });
   }
@@ -75,8 +66,6 @@ class LoginScreen extends ParseComponent {
         } else {
           // Data from request is in result
           console.log(result);
-          // this.setState({profile_pic_url: result.data.url});
-          // console.log(this.state);
 
           var currentUser = Parse.User.currentAsync().then(
               (currentuser) =>  {

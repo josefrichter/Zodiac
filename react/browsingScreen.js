@@ -10,9 +10,6 @@ import React, {
   Component,
   PanResponder, } from 'react-native';
 import clamp from 'clamp';
-// import ReactMixin from 'react-mixin';
-
-// var ReactMixin = require('react-mixin');
 
 var Parse = require('parse/react-native');
 var ParseReact = require('parse-react/react-native');
@@ -26,15 +23,6 @@ var People = [
   'purple',
   'orange',
 ]
-
-// var query = new Parse.Query(Parse.User);
-// query.equalTo("gender", "female");  // find all the women
-// query.find({
-//   success: function(women) {
-//     // Do stuff
-//     console.log(women);
-//   }
-// });
 
 var SWIPE_THRESHOLD = 120;
 
@@ -90,9 +78,6 @@ class BrowsingScreen extends ParseComponent {
     var query = new Parse.Query('User');
     query.equalTo("gender", "Female").limit(15);  // find all the women
     console.log(query);
-    // return {
-    //   users: query
-    // }
     console.log('this', this);
     var _this = this;
     query.find({
@@ -100,7 +85,6 @@ class BrowsingScreen extends ParseComponent {
         // Successfully retrieved the object.
         console.log('query response:', object);
         People = object
-        // person: People[0],
         this.setState({person: People[0]});
       },
       error: function(error) {
@@ -151,26 +135,6 @@ class BrowsingScreen extends ParseComponent {
     this.state.enter.setValue(0);
     this._goToNextPerson();
     this._animateEntrance();
-  }
-
-  render7() {
-    console.log(this.data);
-    return (
-        <View style={styles.container}>
-            <Text style={styles.yupText}>nothing!</Text>
-        </View>
-    );
-  }
-
-  render6() {
-    // Render the text of each comment as a list item
-    return (
-      <ul>
-        {this.data.users.map(function(user) {
-          return <li>{user.attributes.firstName}</li>;
-        })}
-      </ul>
-    );
   }
 
   render() {
@@ -262,5 +226,3 @@ var styles = StyleSheet.create({
 });
 
 module.exports = BrowsingScreen;
-
-// ReactMixin.onClass(BrowsingScreen, ParseReact.Mixin);

@@ -19,8 +19,6 @@ const {
   FBSDKGraphRequest,
 } = FBSDKCore;
 
-// var BrowsingScreen = require('./browsingScreen.js');
-
 class ProfileScreen extends Component {
 
   constructor(props) {
@@ -32,8 +30,6 @@ class ProfileScreen extends Component {
     var currentUser = Parse.User.currentAsync().then(
       (currentuser) => {
           this.setState({profile_pic_url: currentuser.attributes.profilePictureUrl});
-          // console.log(currentuser.attributes.profilepic);
-          // console.log(this.state.profile_pic_url);
       }
     )
   }
@@ -43,7 +39,6 @@ class ProfileScreen extends Component {
   }
 
   _goBrowsing() {
-    // var BrowsingScreen = require('./browsingScreen.js');
     this.props.navigator.push({
       title: "Browse",
       id: "browsing",
