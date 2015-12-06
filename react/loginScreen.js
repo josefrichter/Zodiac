@@ -38,11 +38,12 @@ class LoginScreen extends ParseComponent {
   constructor(props) {
     super(props);
     this._goToProfile = this._goToProfile.bind(this);
+    this._goToMessaging = this._goToMessaging.bind(this);
     this.state = {};
   }
 
   observe() {
-    console.log(ParseReact.currentUser)
+    // console.log(ParseReact.currentUser)
     return {
       user: ParseReact.currentUser
     };
@@ -53,6 +54,14 @@ class LoginScreen extends ParseComponent {
     this.props.navigator.push({
       title: "Profile",
       id: "profile",
+      passProps: {} // TODO https://github.com/facebook/react-native/issues/1103
+    });
+  }
+
+  _goToMessaging() {
+    this.props.navigator.push({
+      title: "Messaging",
+      id: "messaging",
       passProps: {} // TODO https://github.com/facebook/react-native/issues/1103
     });
   }
@@ -167,6 +176,13 @@ class LoginScreen extends ParseComponent {
             onPress={this._getProfilePic.bind(this)}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>Testing - Get profile pic</Text>
+            </View>
+          </TouchableWithoutFeedback>
+
+          <TouchableWithoutFeedback
+            onPress={this._goToMessaging.bind(this)}>
+            <View style={styles.button}>
+              <Text style={styles.buttonText}>Testing - Go to MessagingListScreen</Text>
             </View>
           </TouchableWithoutFeedback>
 

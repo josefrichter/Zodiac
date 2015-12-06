@@ -24,6 +24,9 @@ Parse.initialize(
 var LoginScreen = require('./react/loginScreen.js');
 var ProfileScreen = require('./react/profileScreen.js');
 var BrowsingScreen = require('./react/browsingScreen.js');
+// var RealtimeRCT = require('./react/RealtimeRCT.js');
+var MessagingScreen = require('./react/messagingScreen.js');
+// var RCTRealtimeMessaging = require('./RCTRealtimeMessagingIOS.js');
 
 class Zodiac extends Component {
 
@@ -34,7 +37,7 @@ class Zodiac extends Component {
 
   // https://github.com/facebook/react-native/blob/master/Examples/UIExplorer/Navigator/NavigatorExample.js
   _renderScene(route, nav) {
-    console.log(nav);
+    // console.log(nav);
     var FallbackComponent = LoginScreen;
     var Component = FallbackComponent;
     switch (route.id) {
@@ -44,6 +47,8 @@ class Zodiac extends Component {
         return <ProfileScreen navigator={nav} />;
       case 'browsing':
         return <BrowsingScreen navigator={nav} />;
+      case 'messaging':
+        return <MessagingScreen navigator={nav} />;
     }
     return <Component navigator={nav} />;
   }
